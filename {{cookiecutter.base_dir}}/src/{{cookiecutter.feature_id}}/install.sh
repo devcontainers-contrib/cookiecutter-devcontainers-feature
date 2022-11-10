@@ -4,7 +4,7 @@ set -e
 {% if cookiecutter.content.aptget is defined and cookiecutter.content.aptget |length > 0  %}   
 {% for aptget_package in cookiecutter.content.aptget -%} 
 {% if aptget_package.optional is defined and aptget_package.optional == "True" -%}   
-INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}={"INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}":-"true"}
+INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}=${INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}:-"true"}
 {% else -%}
 INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}="true"
 {%- endif -%}
@@ -15,23 +15,23 @@ INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", 
 {% for pipx_package in cookiecutter.content.pipx %}
 # pipx package parameters
 {% if pipx_package.optional is defined and  pipx_package.optional == "True" -%}   
-INCLUDE{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}={"INCLUDE{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}":-"true"}
+INCLUDE{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}=${INCLUDE{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}:-"true"}
 {% else -%}
 INCLUDE{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}="true"
 {% endif -%}
-{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}VERSION={"{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}VERSION":-"latest"}
+{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}VERSION=${{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}VERSION:-"latest"}
 {% for pipx_injection in pipx_package.injections %}
 # pipx injection parameters
 {% if pipx_injection.optional is defined and pipx_injection.optional == "True" %}   
-    INCLUDE{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}={"INCLUDE{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}":-"true"}
+    INCLUDE{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}=${INCLUDE{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}:-"true"}
 {%- else %}
     INCLUDE{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}="true"
 {%- endif %}
-    {{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}VERSION={"{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}VERSION":-"latest"}
+    {{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}VERSION=${{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}VERSION:-"latest"}
 {%- endfor %}
 {% if pipx_package.version_alias is defined %}   
 # add version alias if needed
-{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}VERSION=${"{{pipx_package.version_alias | upper | replace("_", "") | replace("-", "")}}":-"latest"}
+{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}VERSION=${{{pipx_package.version_alias | upper | replace("_", "") | replace("-", "")}}:-"latest"}
 {%- endif -%}
 {%- endfor -%}
 {%- endif %}
