@@ -60,7 +60,7 @@ check_packages() {
 {% if cookiecutter.content.aptget is defined and cookiecutter.content.aptget |length > 0  %} 
 apt_install_command=""
 {% for aptget_package in cookiecutter.content.aptget -%} 
-if [ "$INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}" == "true"]; then
+if [ "$INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}" == "true" ]; then
     apt_install_command="$apt_install_command {{aptget_package.package_name}}"
 fi
 echo "Installing $apt_install_command ..."
