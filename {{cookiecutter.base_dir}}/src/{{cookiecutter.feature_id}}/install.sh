@@ -1,14 +1,14 @@
+{% set optional_aptget_packages = (cookiecutter.content.aptget | selectattr('optional', 'equalto', 'True') | list) %}
+{% set mandatory_aptget_packages = (cookiecutter.content.aptget | selectattr('optional', 'equalto', 'False') | list) %}
 #!/usr/bin/env bash
 
 set -e
-{% if cookiecutter.content.aptget is defined and cookiecutter.content.aptget |length > 0  %}   
-{% for aptget_package in cookiecutter.content.aptget -%} 
-{% if aptget_package.optional is defined and aptget_package.optional == "True" -%}   
+
+{% if optional_aptget_packages |length > 0  %} 
+# optional aptget packages  
+{% for aptget_package in optional_aptget_packages -%} 
 INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}=${INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}:-"true"}
-{% else -%}
-INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}="true"
-{%- endif -%}
-{%- endfor -%}
+{% endfor -%}
 {%- endif -%}
 
 {% if cookiecutter.content.pipx is defined and cookiecutter.content.pipx |length > 0 %}   
@@ -58,20 +58,22 @@ check_packages() {
 }
 
 {% if cookiecutter.content.aptget is defined and cookiecutter.content.aptget |length > 0  %} 
-apt_install_command=""
-{% for aptget_package in cookiecutter.content.aptget -%} 
-if [ "$INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}" == "true" ]; then
-    apt_install_command="$apt_install_command {{aptget_package.package_name}}"
-fi
-echo "Installing $apt_install_command ..."
-check_packages $apt_install_command
-{% endfor %}
+{% if mandatory_aptget_packages is defined and mandatory_aptget_packages|length > 0 %}
+aptget_packages=({% for aptget_package_name in mandatory_aptget_packages -%}{{aptget_package_name.package_name}} {% endfor %})
+{% else %}
+aptget_packages=()
+{% endif %}
 
-{%- endif %}
+{% for aptget_package in optional_aptget_packages -%} 
+if [ "$INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}" == "true" ]; 
+    aptget_packages+=("{{aptget_package.package_name}}")
+fi
+{% endfor %}
+check_packages ${aptget_packages[@]}
+{% endif %}
+
 
 {% if cookiecutter.content.pipx is defined and cookiecutter.content.pipx |length > 0  %} 
-
-
 # settings these will allow us to clean leftovers later on
 export PYTHONUSERBASE=/tmp/pip-tmp
 export PIP_CACHE_DIR=/tmp/pip-tmp/cache
