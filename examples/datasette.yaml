@@ -1,7 +1,7 @@
 default_context:
   base_dir: features
   description: Datasette is a tool for exploring and publishing data and is aimed at data journalists, museum curators, archivists, local governments, scientists and researchers.
-  feature_name: datasette
+  feature_name: Datasette
   feature_id: datasette
   test_command: datasette --version
   gitrepo: http://github.com/devcontainers-contrib/features
