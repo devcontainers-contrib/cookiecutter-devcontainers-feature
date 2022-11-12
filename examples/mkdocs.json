@@ -50,6 +50,6 @@
         "aptget": []
     },
     "_extensions": [
-        "jinja2_strcase.StrcaseExtension"
-    ]
+        "jinja2_strcase.StrcaseExtension",
+        "extensions.ToEnvCase"    ]
 }
