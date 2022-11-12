@@ -7,32 +7,33 @@ set -e
 {% if optional_aptget_packages |length > 0  %} 
 # optional aptget packages  
 {% for aptget_package in optional_aptget_packages -%} 
-INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}=${INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}:-"true"}
+INCLUDE{{ aptget_package.display_name | to_env_case }}=${INCLUDE{{ aptget_package.display_name | to_env_case }}:-"true"}
 {% endfor -%}
 {%- endif -%}
 
 {% if cookiecutter.content.pipx is defined and cookiecutter.content.pipx |length > 0 %}   
 {% for pipx_package in cookiecutter.content.pipx %}
-# pipx package parameters
-{% if pipx_package.optional is defined and  pipx_package.optional == "True" -%}   
-INCLUDE{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}={% raw %}${INCLUDE{% endraw %}{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}{% raw %}:-"true"}{% endraw %}
+# pipx package parameters for {{ pipx_package.display_name }}
+{% if pipx_package.optional is defined and  pipx_package.optional == "True" %}   
+INCLUDE{{ pipx_package.display_name| to_env_case  }}={% raw %}${INCLUDE{% endraw %}{{ pipx_package.display_name| to_env_case }}{% raw %}:-"true"}{% endraw %}
 {% else -%}
-INCLUDE{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}="true"
+INCLUDE{{ pipx_package.display_name| to_env_case }}="true"
 {% endif -%}
-{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}VERSION={% raw %}${{% endraw %}{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}{% raw %}VERSION:-"latest"}{% endraw %}
-{% for pipx_injection in pipx_package.injections %}
-# pipx injection parameters
-{% if pipx_injection.optional is defined and pipx_injection.optional == "True" %}   
-    INCLUDE{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}=${INCLUDE{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}:-"true"}
-{%- else %}
-    INCLUDE{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}="true"
+{%- if pipx_package.version_alias is defined -%}   
+{{ pipx_package.display_name | to_env_case}}VERSION={% raw %}${{% endraw %}{{pipx_package.version_alias | to_env_case}}{% raw %}:-"latest"}{% endraw %}
+{% else %}
+{{ pipx_package.display_name| to_env_case }}VERSION={% raw %}${{% endraw %}{{ pipx_package.display_name | to_env_case}}{% raw %}VERSION:-"latest"}{% endraw %}
 {%- endif %}
-    {{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}VERSION={% raw %}${{% endraw %}{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}{% raw %}VERSION:-"latest"}{% endraw %}
+    # pipx injection parameters for {{ pipx_package.display_name }} env
+{%- for pipx_injection in pipx_package.injections %}
+{%- if pipx_injection.optional is defined and pipx_injection.optional == "True" %}   
+    INCLUDE{{ pipx_injection.display_name | to_env_case}}=${INCLUDE{{ pipx_injection.display_name | to_env_case}}:-"true"}
+{%- else %}
+    INCLUDE{{ pipx_injection.display_name| to_env_case}}="true"
+{%- endif %}
+    {{ pipx_injection.display_name| to_env_case}}VERSION={% raw %}${{% endraw %}{{ pipx_injection.display_name| to_env_case}}{% raw %}VERSION:-"latest"}{% endraw %}
 {%- endfor %}
-{% if pipx_package.version_alias is defined %}   
-# add version alias if needed
-{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}VERSION={% raw %}${{% endraw %}{{pipx_package.version_alias | upper | replace("_", "") | replace("-", "")}}{% raw %}:-"latest"}{% endraw %}
-{%- endif -%}
+
 {%- endfor -%}
 {%- endif %}
 
@@ -65,7 +66,7 @@ aptget_packages=()
 {% endif %}
 
 {% for aptget_package in optional_aptget_packages -%} 
-if [ "$INCLUDE{{ aptget_package.display_name | upper | replace("_", "") | replace("-", "")}}" == "true" ]; 
+if [ "$INCLUDE{{ aptget_package.display_name  | to_env_case }}" =  "true" ]; 
     aptget_packages+=("{{aptget_package.package_name}}")
 fi
 {% endfor %}
@@ -111,19 +112,19 @@ fi
 
 #
 {% for pipx_package in cookiecutter.content.pipx %}
-if [ "$INCLUDE{{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}" == "true" ]; then
-    if [ "${{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}VERSION" == "latest" ]; then
+if [ "$INCLUDE{{ pipx_package.display_name | to_env_case }}" = "true" ]; then
+    if [ "${{ pipx_package.display_name  | to_env_case }}VERSION" =  "latest" ]; then
         util_command="{{pipx_package.package_name}}"
     else
-        util_command="{{pipx_package.package_name}}==${{ pipx_package.display_name | upper | replace("_", "") | replace("-", "")}}VERSION"
+        util_command="{{pipx_package.package_name}}==${{ pipx_package.display_name | to_env_case }}VERSION"
     fi
     "${PIPX_COMMAND}" install --system-site-packages --force --pip-args '--no-cache-dir --force-reinstall' ${util_command}
 {% for pipx_injection in pipx_package.injections %}
-    if [ "$INCLUDE{{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}" == "true" ]; then
-        if [ "${{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}VERSION" == "latest" ]; then
+    if [ "$INCLUDE{{ pipx_injection.display_name | to_env_case }}" =  "true" ]; then
+        if [ "${{ pipx_injection.display_name | to_env_case }}VERSION" =  "latest" ]; then
             util_command="{{pipx_injection.package_name}}"
         else
-            util_command="{{pipx_injection.package_name}}==${{ pipx_injection.display_name | upper | replace("_", "") | replace("-", "")}}VERSION"
+            util_command="{{pipx_injection.package_name}}==${{ pipx_injection.display_name | to_env_case }}VERSION"
         fi
     pipx inject {{pipx_package.package_name}} ${util_command}
     fi

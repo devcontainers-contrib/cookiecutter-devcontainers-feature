@@ -1,5 +1,3 @@
-
-
 {
     "name": "{{cookiecutter.feature_name}}",
     "id": "{{cookiecutter.feature_id}}",
@@ -10,9 +8,8 @@
         "ghcr.io/devcontainers/features/python:latest"
     ],
     "options": {
-{% for pipx_package in cookiecutter.content.pipx %}
-        "{% if pipx_package.version_alias is defined %}{{pipx_package.version_alias}}{% else %}{{ pipx_package.display_name | lower | replace("_", "") | replace("-", "")}}Version{% endif %}" :
-        {
+        {% for pipx_package in cookiecutter.content.pipx %}
+        "{% if pipx_package.version_alias is defined %}{{pipx_package.version_alias}}{% else %}{{ pipx_package.display_name | lower | replace("_", "") | replace("-", "")}}Version{% endif %}": {
             "type": "string",
             "proposals": [
                 "latest"
@@ -20,19 +17,16 @@
             "default": "latest",
             "description": "Select the {{pipx_package.display_name}} version you would like to install"
         },
-        
-{% for pipx_injection in pipx_package.injections %}
+        {% for pipx_injection in pipx_package.injections %}
 {%- if pipx_injection.optional == "True" %}   
-    "include{{ pipx_injection.display_name | replace("_", " ") | replace("-", " ") | to_camel}}": {
+    "include{{ pipx_injection.display_name | replace("_", "") | replace("-", "") | to_camel}}": {
             "type": "boolean",
             "default": true,
             "description": "Include {{pipx_injection.display_name}}"
         },
-        {{ "," if not loop.last }}
-{%- endif %}
+        {%- endif %}
 
-        "{{ pipx_injection.display_name | replace("_", " ") | replace("-", " ") | to_lower_camel}}Version" :
-        {
+        "{{ pipx_injection.display_name | replace("_", "") | replace("-", "") | to_lower_camel}}Version": {
             "type": "string",
             "proposals": [
                 "latest"
@@ -40,8 +34,7 @@
             "default": "latest",
             "description": "Select the {{pipx_injection.display_name}} version you would like to install"
         },
-        {{ "," if not loop.last }}
-{% endfor %}
+        {% endfor %}
 {% endfor %}
     }
 }
