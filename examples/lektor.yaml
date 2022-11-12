@@ -1,0 +1,16 @@
+default_context:
+  base_dir: features
+  description: Lektor is a static website generator.
+  feature_name: lektor
+  feature_id: lektor
+  test_command: lektor --version
+  gitrepo: http://github.com/devcontainers-contrib/features
+  version: 1.0.0
+  content:
+    pipx:
+    - package_name: lektor
+      display_name: lektor
+      version_alias: version
+      optional: false
+    aptget: []
+
