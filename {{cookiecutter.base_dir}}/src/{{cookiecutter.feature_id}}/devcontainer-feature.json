@@ -17,6 +17,8 @@
             "default": "latest",
             "description": "Select the {{pipx_package.display_name}} version you would like to install"
         },
+        {% if pipx_package.injections is defined and pipx_package.injections |length > 0 %}   
+
         {% for pipx_injection in pipx_package.injections %}
 {%- if pipx_injection.optional == "True" %}   
     "include{{ pipx_injection.display_name | replace("_", "") | replace("-", "") | to_camel}}": {
@@ -35,6 +37,8 @@
             "description": "Select the {{pipx_injection.display_name}} version you would like to install"
         },
         {% endfor %}
+        {%- endif %}
+
 {% endfor %}
     }
 }

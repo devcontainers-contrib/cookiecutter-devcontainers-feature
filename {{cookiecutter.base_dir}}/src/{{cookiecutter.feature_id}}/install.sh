@@ -24,6 +24,7 @@ INCLUDE{{ pipx_package.display_name| to_env_case }}="true"
 {% else %}
 {{ pipx_package.display_name| to_env_case }}VERSION={% raw %}${{% endraw %}{{ pipx_package.display_name | to_env_case}}{% raw %}VERSION:-"latest"}{% endraw %}
 {%- endif %}
+{%- if pipx_package.injections is defined and pipx_package.injections |length > 0 -%}   
     # pipx injection parameters for {{ pipx_package.display_name }} env
 {%- for pipx_injection in pipx_package.injections %}
 {%- if pipx_injection.optional is defined and pipx_injection.optional == "True" %}   
@@ -33,7 +34,7 @@ INCLUDE{{ pipx_package.display_name| to_env_case }}="true"
 {%- endif %}
     {{ pipx_injection.display_name| to_env_case}}VERSION={% raw %}${{% endraw %}{{ pipx_injection.display_name| to_env_case}}{% raw %}VERSION:-"latest"}{% endraw %}
 {%- endfor %}
-
+{%- endif %}
 {%- endfor -%}
 {%- endif %}
 
@@ -56,14 +57,14 @@ check_packages() {
     fi
 }
 
-{% if cookiecutter.content.aptget is defined and cookiecutter.content.aptget |length > 0  %} 
-{% if mandatory_aptget_packages is defined and mandatory_aptget_packages|length > 0 %}
+{% if cookiecutter.content.aptget is defined and cookiecutter.content.aptget |length > 0  -%} 
+{%- if mandatory_aptget_packages is defined and mandatory_aptget_packages|length > 0 -%}
 aptget_packages=({% for aptget_package_name in mandatory_aptget_packages -%}{{aptget_package_name.package_name}} {% endfor %})
-{% else %}
+{%- else -%}
 aptget_packages=()
-{% endif %}
+{%- endif -%}
 
-{% for aptget_package in optional_aptget_packages -%} 
+{%- for aptget_package in optional_aptget_packages -%} 
 if [ "$INCLUDE{{ aptget_package.display_name  | to_env_case }}" =  "true" ]; 
     aptget_packages+=("{{aptget_package.package_name}}")
 fi
@@ -143,6 +144,7 @@ if [ "$INCLUDE{{ pipx_package.display_name | to_env_case }}" = "true" ]; then
         util_command="{{pipx_package.package_name}}==${{ pipx_package.display_name | to_env_case }}VERSION"
     fi
     "${PIPX_COMMAND}" install --system-site-packages --force --pip-args '--no-cache-dir --force-reinstall' ${util_command}
+{%- if pipx_package.injections is defined and pipx_package.injections |length > 0 -%}   
 {% for pipx_injection in pipx_package.injections %}
     if [ "$INCLUDE{{ pipx_injection.display_name | to_env_case }}" =  "true" ]; then
         if [ "${{ pipx_injection.display_name | to_env_case }}VERSION" =  "latest" ]; then
@@ -153,6 +155,7 @@ if [ "$INCLUDE{{ pipx_package.display_name | to_env_case }}" = "true" ]; then
     pipx inject {{pipx_package.package_name}} ${util_command}
     fi
 {% endfor %}
+{%- endif -%}
 fi
 {% endfor %}
 
