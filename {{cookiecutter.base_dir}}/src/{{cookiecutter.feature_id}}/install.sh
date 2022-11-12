@@ -131,6 +131,11 @@ if ! type pipx > /dev/null 2>&1; then
     pip3 install --disable-pip-version-check --no-cache-dir --user pipx 2>&1
     /tmp/pip-tmp/bin/pipx install --pip-args=--no-cache-dir pipx
     PIPX_COMMAND=/tmp/pip-tmp/bin/pipx
+
+    updaterc "export PIPX_HOME=\"${PIPX_HOME}\""
+    updaterc "export PIPX_BIN_DIR=\"${PIPX_BIN_DIR}\""
+    updaterc "if [[ \"\${PATH}\" != *\"\${PIPX_BIN_DIR}\"* ]]; then export PATH=\"\${PATH}:\${PIPX_BIN_DIR}\"; fi"
+
 else
     PIPX_COMMAND=pipx
 fi
@@ -158,10 +163,6 @@ if [ "$INCLUDE{{ pipx_package.display_name | to_env_case }}" = "true" ]; then
 {%- endif -%}
 fi
 {% endfor %}
-
-updaterc "export PIPX_HOME=\"${PIPX_HOME}\""
-updaterc "export PIPX_BIN_DIR=\"${PIPX_BIN_DIR}\""
-updaterc "if [[ \"\${PATH}\" != *\"\${PIPX_BIN_DIR}\"* ]]; then export PATH=\"\${PATH}:\${PIPX_BIN_DIR}\"; fi"
 
 # cleaning after pip
 rm -rf /tmp/pip-tmp
