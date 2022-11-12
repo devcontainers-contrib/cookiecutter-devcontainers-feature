@@ -1,7 +1,7 @@
 {%- set optional_aptget_packages = (cookiecutter.content.aptget | selectattr('optional', 'equalto', 'True') | list) -%}
 {%- set mandatory_aptget_packages = (cookiecutter.content.aptget | selectattr('optional', 'equalto', 'False') | list) -%}
 #!/usr/bin/env bash
-# This is a generated code using the devcontainer-feature cookiecutter
+# This code was generated using the devcontainer-feature cookiecutter.
 # For more information: https://github.com/devcontainers-contrib/cookiecutter-devcontainers-feature
 set -e
 {% if optional_aptget_packages |length > 0  %} 
