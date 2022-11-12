@@ -160,7 +160,7 @@ if [ "$INCLUDE{{ pipx_package.display_name | to_env_case }}" = "true" ]; then
     pipx inject {{pipx_package.package_name}} ${util_command}
     fi
 {% endfor %}
-{%- endif -%}
+{% endif %}
 fi
 {% endfor %}
 
