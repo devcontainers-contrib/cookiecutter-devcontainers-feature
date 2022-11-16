@@ -12,24 +12,38 @@ default_context:
     - package_name: mkdocs
       display_name: MKDocs
       version_alias: version
+      default: latest
+      exposed: false
       optional: false
       injections:
       - package_name: mkdocs-material
-        display_name: plugin mkdocs-material
+        display_name: mkdocs-material-plugin
+        default: latest
+        exposed: true
         optional: true
       - package_name: pymdown-extensions
-        display_name: plugin pymdown-extensions
+        display_name: pymdown-extensions-plugin
+        default: none
+        exposed: true
         optional: true
       - package_name: mkdocstrings[crystal,python]
-        display_name: plugin mkdocstrings
+        display_name: mkdocstrings-plugin
+        default: none
+        exposed: true
         optional: true
       - package_name: mkdocs-monorepo-plugin
-        display_name: plugin mkdocs-monorepo-plugin
+        display_name: mkdocs-monorepo-plugin
+        default: none
+        exposed: true
         optional: true
       - package_name: mkdocs-pdf-export-plugin
-        display_name: plugin mkdocs-pdf-export-plugin
+        display_name: mkdocs-pdf-export-plugin
+        default: none
+        exposed: true
         optional: true
       - package_name: mkdocs-awesome-pages-plugin
-        display_name: plugin mkdocs-awesome-pages-plugin
+        display_name: mkdocs-awesome-pages-plugin
+        default: none
+        exposed: true
         optional: true
     aptget: []

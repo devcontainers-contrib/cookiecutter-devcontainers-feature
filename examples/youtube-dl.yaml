@@ -11,5 +11,6 @@ default_context:
     - package_name: youtube-dl
       display_name: youtube-dl
       version_alias: version
+      exposed: false
       optional: false
     aptget: []

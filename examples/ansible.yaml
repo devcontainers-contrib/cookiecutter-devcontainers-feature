@@ -11,10 +11,16 @@ default_context:
     - package_name: ansible-core
       display_name: Ansible
       version_alias: version
+      exposed: true
+      default: latest
       optional: false
+
       injections:
       - package_name: ansible
-        display_name: AnsibleCommunity
+        display_name: Ansible Community
+        exposed: true
+        default: latest
         optional: true
+
     aptget: []
 
