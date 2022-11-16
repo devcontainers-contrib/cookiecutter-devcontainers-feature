@@ -5,7 +5,7 @@ default_context:
   feature_id: bandit
   test_command: bandit --version
   gitrepo: http://github.com/devcontainers-contrib/features
-  version: 1.1.1
+  version: 1.0.0
   content:
     pipx:
     - package_name: bandit
