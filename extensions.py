@@ -1,5 +1,4 @@
 from typing import List
-import requests
 from jinja2.ext import Extension
 
 
