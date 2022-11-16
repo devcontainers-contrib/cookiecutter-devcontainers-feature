@@ -38,6 +38,17 @@ set -e
 {%- endfor -%}
 {%- endif %}
 
+{% if cookiecutter.content.npm is defined and cookiecutter.content.npm |length > 0 -%}   
+{%- for npm_package in cookiecutter.content.npm -%}
+# npm version for {{ npm_package.package_name }}
+{% if npm_package.exposed is defined and npm_package.exposed == "True" -%}   
+{{ npm_package.display_name | to_screaming_snake_case }}=${% raw %}{{% endraw %}{%- if npm_package.version_alias is defined -%}{{npm_package.version_alias | to_env_case}}{% else %}{{ npm_package.display_name | to_env_case}}{%- endif -%}:-"{{ npm_package.default }}"{% raw %}}{% endraw %}
+{% else -%}
+{{ npm_package.display_name | to_screaming_snake_case }}="latest"
+{% endif -%}
+{%- endfor -%}
+{%- endif %}
+
 # Clean up
 rm -rf /var/lib/apt/lists/*
 
@@ -89,10 +100,8 @@ export PIP_CACHE_DIR=/tmp/pip-tmp/cache
 # install python if does not exists
 if ! type pip3 > /dev/null 2>&1; then
     echo "Installing python3..."
-    # If the python feature script had option to install pipx without the 
-    # additional tools we would have used that, but since it doesnt 
-    # we have to disable it with INSTALLTOOLS=false and install
-    # pipx manually later on
+    # we set INSTALLTOOLS=false in order to save disk space, but as
+    # a result we will need to install pipx manually later on
     check_packages curl
     export VERSION="system" 
     export INSTALLTOOLS="false"
@@ -161,10 +170,28 @@ if [ "${{ pipx_package.display_name | to_screaming_snake_case }}" != "none" ]; t
 {% endif %}
 fi
 {% endfor %}
-
 # cleaning after pip
 rm -rf /tmp/pip-tmp
+{%- endif %}
 
+{% if cookiecutter.content.npm is defined and cookiecutter.content.npm |length > 0  %} 
+# install node+npm if does not exists
+if ! type npm > /dev/null 2>&1; then
+    echo "Installing npde and npm..."
+    check_packages curl
+    source /dev/stdin  <<< "$(curl -fsSL https://raw.githubusercontent.com/devcontainers/features/main/src/node/install.sh)"
+fi
+
+{% for npm_package in cookiecutter.content.npm -%}
+if [ "${{ npm_package.display_name | to_screaming_snake_case }}" != "none" ]; then
+    if [ "${{ npm_package.display_name | to_screaming_snake_case }}" =  "latest" ]; then
+        util_command="{{npm_package.package_name}}"
+    else
+        util_command="{{npm_package.package_name}}@${{ npm_package.display_name | to_screaming_snake_case }}"
+    fi
+    npm install -g --omit=dev ${util_command}
+fi
+{% endfor %}
 {% endif %}
 
 

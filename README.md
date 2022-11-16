@@ -2,8 +2,9 @@
 
 currently supports:
 
-* pipx based features
-* apt-get based features
+* pipx based features 
+* apt-get based features 
+* npm based features
 
 # Dependencies
 

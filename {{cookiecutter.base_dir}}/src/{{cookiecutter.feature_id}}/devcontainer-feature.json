@@ -33,6 +33,7 @@
         {%- endif %}
 
         {% endfor -%}
+        {% if cookiecutter.content.pipx is defined and cookiecutter.content.pipx |length > 0 %}   
 
         {% for pipx_package in cookiecutter.content.pipx %}
 
@@ -91,5 +92,37 @@
         {%- endif %}
 
 {% endfor %}
+        {%- endif %}
+
+        {% if cookiecutter.content.npm is defined and cookiecutter.content.npm |length > 0 %}   
+
+        {% for npm_package in cookiecutter.content.npm %}
+
+        {%- if npm_package.exposed == "True" %}   
+        {%- if npm_package.optional == "True" %}   
+
+        "{% if npm_package.version_alias is defined %}{{npm_package.version_alias}}{% else %}{{ npm_package.display_name | to_camel_case }}{% endif %}": {
+            "type": "boolean",
+            "proposals": [
+                "latest",
+                "none"
+            ],
+            "default": {{ npm_package.default }},
+            "description": "Select the version of {{npm_package.display_name}} to install. 'none' will skip installation."
+        },
+        {% else %}
+        "{% if npm_package.version_alias is defined %}{{npm_package.version_alias}}{% else %}{{ npm_package.display_name | to_camel_case }}{% endif %}": {
+            "type": "boolean",
+            "proposals": [
+                "latest",
+            ],
+            "default": {{ npm_package.default }},
+            "description": "Select the version of {{npm_package.display_name}} to install."
+        },
+        {%- endif %}
+        {%- endif %}
+
+{% endfor %}
+        {%- endif %}
     }
 }
