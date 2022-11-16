@@ -1,4 +1,3 @@
-from typing import List
 from jinja2.ext import Extension
 
 
@@ -12,7 +11,7 @@ class ToEnvCase(Extension):
         def to_camel_case(input_str: str):
             output = ''.join(x for x in input_str.title() if x.isalnum())
             return output[0].lower() + output[1:]
-            
+                      
         def to_screaming_snake_case(input_str: str) -> str:
             return ''.join(x if x.isalnum() else "_" for x in input_str.upper())
 
