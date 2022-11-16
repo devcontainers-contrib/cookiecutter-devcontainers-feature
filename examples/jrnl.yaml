@@ -11,7 +11,7 @@ default_context:
     - package_name: jrnl
       display_name: jrnl
       version_alias: version
-      exposed: false
+      exposed: true
       optional: false
     aptget: []
 

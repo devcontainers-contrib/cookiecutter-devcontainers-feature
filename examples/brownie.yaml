@@ -11,6 +11,6 @@ default_context:
     - package_name: eth-brownie
       display_name: Brownie
       version_alias: version
-      exposed: false
+      exposed: true
       optional: false
     aptget: []

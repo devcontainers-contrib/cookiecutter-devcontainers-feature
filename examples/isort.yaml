@@ -11,6 +11,6 @@ default_context:
     - package_name: isort
       display_name: isort
       version_alias: version
-      exposed: false
+      exposed: true
       optional: false
     aptget: []

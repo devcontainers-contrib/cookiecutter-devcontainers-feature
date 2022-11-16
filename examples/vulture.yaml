@@ -11,6 +11,6 @@ default_context:
     - package_name: vulture
       display_name: Vulture
       version_alias: version
-      exposed: false
+      exposed: true
       optional: false
     aptget: []

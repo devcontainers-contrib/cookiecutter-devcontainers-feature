@@ -11,7 +11,7 @@ default_context:
     - package_name: glances[action,browser,cloud,cpuinfo,docker,export,folders,gpu,graph,ip,raid,snmp,web,wifi]
       display_name: Glances
       version_alias: version
-      exposed: false
+      exposed: true
       optional: false
     aptget: []
 

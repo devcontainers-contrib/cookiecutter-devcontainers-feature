@@ -11,6 +11,6 @@ default_context:
     - package_name: coverage
       display_name: Coverage
       version_alias: version
-      exposed: false
+      exposed: true
       optional: false
     aptget: []

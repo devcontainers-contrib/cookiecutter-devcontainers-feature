@@ -11,6 +11,6 @@ default_context:
     - package_name: qrcode[pil]
       display_name: qrcode
       version_alias: version
-      exposed: false
+      exposed: true
       optional: false
     aptget: []
