@@ -11,7 +11,7 @@ default_context:
     - package_name: localstack[full]
       display_name: Localstack
       version_alias: version
-      default: 'latest'
+      default: latest
       exposed: true
       optional: false
     aptget: 

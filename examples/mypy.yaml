@@ -11,6 +11,7 @@ default_context:
     - package_name: mypy
       display_name: Mypy
       version_alias: version
+      default: latest
       exposed: true
       optional: false
     aptget: []

@@ -11,6 +11,7 @@ default_context:
     - package_name: datasette
       display_name: datasette
       version_alias: version
+      default: latest
       exposed: true
       optional: false
     aptget: []
