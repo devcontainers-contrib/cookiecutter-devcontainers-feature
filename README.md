@@ -9,8 +9,6 @@ currently supports:
 
 `pipx install cookiecutter`
 
-`pipx inject cookiecutter jinja2-strcase`
-
 ## Example to create mkdocs feature
 mkdocs uses pipx + multiple injections
 
