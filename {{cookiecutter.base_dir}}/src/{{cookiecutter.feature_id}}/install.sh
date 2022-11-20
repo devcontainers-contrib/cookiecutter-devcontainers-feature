@@ -179,7 +179,10 @@ rm -rf /tmp/pip-tmp
 if ! type npm > /dev/null 2>&1; then
     echo "Installing npde and npm..."
     check_packages curl
-    source /dev/stdin  <<< "$(curl -fsSL https://raw.githubusercontent.com/devcontainers/features/main/src/node/install.sh)"
+    curl -fsSL https://raw.githubusercontent.com/devcontainers/features/main/src/node/install.sh | $SHELL
+    export NVM_DIR=/usr/local/share/nvm
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
 fi
 
 {% for npm_package in cookiecutter.content.npm -%}
